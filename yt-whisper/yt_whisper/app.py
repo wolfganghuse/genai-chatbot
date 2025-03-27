@@ -13,7 +13,7 @@ from pgvector.sqlalchemy import Vector
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import tempfile
-from yt_whisper.vtt_utils import merge_webvtt_to_list
+from vtt_utils import merge_webvtt_to_list
 
 load_dotenv(".env")
 
