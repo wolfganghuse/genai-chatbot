@@ -68,8 +68,8 @@ def process_video(video_url: str) -> dict[str, str]:
         audio_file = os.path.join(tmp_dir, "audio.mp3")
         ffmpeg.input(video_url).output(audio_file, format="mp3", acodec="libmp3lame").run()
         
-        with open(audio_file, "rb") as audio_file:
-            whisper_transcript = model.transcribe(audio_file)
+        
+        whisper_transcript = model.transcribe(audio_file)
 
             #whisper_transcript = client.audio.transcriptions.create(
             #    model="whisper-1", file=audio_file, response_format="vtt"
