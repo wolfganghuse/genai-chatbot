@@ -1,6 +1,8 @@
 import os
 import argparse
-import json
+
+import whisper
+
 import numpy as np
 import ffmpeg
 from pathlib import Path
@@ -16,6 +18,9 @@ from yt_whisper.vtt_utils import merge_webvtt_to_list
 load_dotenv(".env")
 
 client = OpenAI(api_key=os.getenv("OPENAI_TOKEN"))
+
+# Whisper Setup
+model = whisper.load_model("base")
 
 # Database Setup
 db_url = os.getenv("DATABASE_URL", "postgresql://user:password@localhost/dbname")
@@ -64,9 +69,11 @@ def process_video(video_url: str) -> dict[str, str]:
         ffmpeg.input(video_url).output(audio_file, format="mp3", acodec="libmp3lame").run()
         
         with open(audio_file, "rb") as audio_file:
-            whisper_transcript = client.audio.transcriptions.create(
-                model="whisper-1", file=audio_file, response_format="vtt"
-            )
+            whisper_transcript = model.transcribe(audio_file)
+
+            #whisper_transcript = client.audio.transcriptions.create(
+            #    model="whisper-1", file=audio_file, response_format="vtt"
+            #)
         
         seconds_to_merge = 8
         transcript = merge_webvtt_to_list(whisper_transcript, seconds_to_merge)
